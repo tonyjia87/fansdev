@@ -10,8 +10,9 @@ namespace App\Http\ApiHelpers\Api;
 
 
 use Exception;
-use Illuminate\Auth\AuthenticationException;
+// use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Illuminate\Http\Request;
 
 class ExceptionReport {
@@ -45,8 +46,9 @@ class ExceptionReport {
      * @var array
      */
     public $doReport = [
-        AuthenticationException::class => ['未授权', 401],
+        // AuthenticationException::class => ['未授权', 401],
         ModelNotFoundException::class  => ['改模型未找到', 404],
+        RouteNotFoundException::class  => ['改模型未找到', 404],
     ];
 
     /**

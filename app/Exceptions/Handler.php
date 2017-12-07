@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Auth\AuthenticationException;
+use App\Http\ApiHelpers\Api\ExceptionReport;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -20,7 +20,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
-        //
+
     ];
 
     /**
@@ -55,6 +55,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+      if (is_a($exception, \Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class) && $request->expectsJson()) {
+        return response()->json(['msg'=>'NotFound']);
+    }
+    if (is_a($exception, \Symfony\Component\Routing\Exception\RouteNotFoundException::class) && $request->expectsJson()) {
+      return response()->json(['msg'=>'NotFound']);
+  }
+
+
+      $reporter = ExceptionReport::make($exception);
+
+       if ($reporter->shouldReturn()){
+           return $reporter->report();
+       }
         return parent::render($request, $exception);
     }
 
